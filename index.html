@@ -83,13 +83,13 @@ header .stats b{color:var(--ink);font-weight:600}
 <body>
 <div class="app">
 <header><h1>Meja Layanan Komplain Elektronik</h1>
-<div class="stats"><span>Terbuka <b id="sOpen">0</b></span><span>Chat <b id="sChat">0</b></span><span>Suara <b id="sVoice">0</b></span><span>Selesai <b id="sDone">0</b></span></div><span id="sv" class="mt" style="font-size:12.5px"></span><button class="btn" id="dl">Kirim semua ke guru</button><button class="btn p" id="adb" hidden>Masuk guru</button><div class="grb" id="gr" hidden></div></header>
+<div class="stats"><span>Terbuka <b id="sOpen">0</b></span><span>Chat <b id="sChat">0</b></span><span hidden>Suara <b id="sVoice">0</b></span><span>Selesai <b id="sDone">0</b></span></div><span id="sv" class="mt" style="font-size:12.5px"></span><span id="pg" class="tag w" style="font-size:12.5px"></span><button class="btn" id="dl">Kirim semua ke guru</button><button class="btn p" id="adb" hidden>Masuk guru</button><div class="grb" id="gr" hidden></div></header>
 
 <section class="col q" aria-label="Antrean komplain">
 <div class="tabs" role="tablist" id="tabs">
 <button role="tab" aria-selected="true" data-f="all">Semua</button>
 <button role="tab" aria-selected="false" data-f="chat">Chat</button>
-<button role="tab" aria-selected="false" data-f="voice">Suara</button></div>
+<button role="tab" aria-selected="false" data-f="voice" hidden>Suara</button></div>
 <div class="list" id="list"></div></section>
 
 <section class="col" aria-label="Percakapan"><div class="main" id="main"></div></section>
@@ -97,7 +97,7 @@ header .stats b{color:var(--ink);font-weight:600}
 </div>
 <div class="mod" id="mod" hidden><div class="card" role="dialog" aria-modal="true" aria-label="Bukti pelanggan"><div class="ch"><b id="mt"></b><button class="btn" id="mx">Tutup</button></div><div id="mv"></div><div id="mq"></div></div></div>
 <div class="ad" id="ad" hidden><div class="adh"><b>Panel Guru: riwayat praktik siswa</b><span class="mt" id="adc"></span><input id="adq" placeholder="Cari nama siswa" aria-label="Cari siswa"><span style="margin-left:auto"></span><button class="btn" id="adx">Unduh rekap (CSV)</button><button class="btn" id="adz">Tutup</button></div><div class="adb"><div id="adl"></div><div id="add"></div></div></div>
-<div class="mod" id="lg" hidden><div class="card" role="dialog" aria-modal="true" aria-label="Data siswa"><b>Mulai praktik layanan pelanggan</b><p class="mt" style="margin:0">Isi namamu. Hasil praktikmu dikirim ke gurumu setiap kali kamu menyelesaikan kasus.</p><input id="lgn" placeholder="Nama lengkap" autocomplete="name"><button class="btn p" id="lgb">Mulai praktik</button></div></div>
+<div class="mod" id="lg" hidden><div class="card" role="dialog" aria-modal="true" aria-label="Data siswa"><b>Mulai praktik layanan pelanggan</b><p class="mt" style="margin:0">Isi namamu. Kerjakan minimal 3 kasus chat sampai selesai; hasilnya otomatis dikirim ke gurumu setiap kali kasus diselesaikan.</p><input id="lgn" placeholder="Nama lengkap" autocomplete="name"><button class="btn p" id="lgb">Mulai praktik</button></div></div>
 <div class="mod" id="bl" hidden style="z-index:40"><div class="card" role="alertdialog" aria-modal="true"><b>Penyimpanan belum bisa dipakai</b><p id="bln" class="mt" style="margin:0">Riwayat praktikmu belum bisa disimpan. Periksa koneksi internet lalu muat ulang halaman ini. Kalau masih gagal, hubungi gurumu.</p></div></div>
 <div class="toast" id="toast" role="status"></div>
 
@@ -186,6 +186,7 @@ const T=[
 {id:'KMP-2054',name:'Eko Saputra',ch:'voice',type:'jumlah',prod:'Lampu LED Philips 9 W',order:'ORD-88150',qty:'20 pcs',date:'31 Okt 2026',sla:'3 jam',st:'baru',script:[['c','Saya beli dua puluh lampu LED, tapi saya hitung cuma dua belas.'],['a','Mohon maaf Pak Eko. Apakah segel dus masih utuh waktu diterima?'],['c','Segelnya sudah agak terbuka, Pak. Saya sudah foto isi dusnya.'],['a','Baik, tolong kirim foto ke chat kami. Kekurangan delapan lampu akan kami proses setelah cek ke gudang.']]},
 {id:'KMP-2055',name:'Wati Handayani',ch:'voice',type:'rusak',prod:'Kipas angin berdiri Cosmos',order:'ORD-88290',qty:'1 unit',date:'2 Nov 2026',sla:'2 jam',st:'baru',script:[['c','Kipas angin saya sampai dengan baling-baling patah dan tiangnya bengkok.'],['a','Mohon maaf Bu Wati. Apakah kardusnya juga rusak waktu kurir mengantar?'],['c','Kardusnya basah dan sobek di satu sisi, Bu. Saya sudah foto.'],['a','Baik, kirim fotonya ke chat kami. Kami akan kirim unit pengganti dan menjemput yang rusak.']]},
 {id:'KMP-2056',name:'Bayu Firmansyah',ch:'voice',type:'garansi',prod:'Printer Epson L3250',order:'ORD-68540',qty:'1 unit',date:'5 Apr 2026',sla:'4 jam',st:'baru',script:[['c','Printer saya muncul error lampu merah berkedip, hasil cetaknya bergaris. Masih garansi kan?'],['a','Selamat siang Pak Bayu. Boleh sebutkan nomor seri di belakang printer?'],['c','Nomornya X5R-8830021. Dibeli April, tapi tintanya saya isi sendiri pakai tinta botolan lain.'],['a','Terima kasih jujurnya Pak. Unit tetap kami periksa dulu, karena pemakaian tinta non-original bisa memengaruhi garansi.']]}];
+T.splice(0,T.length,...T.filter(t=>t.ch=='chat'));
 let cur=T[0],filter='all',timer=null,sec=0,lineTimer=null;const $=s=>document.querySelector(s);
 const ST={baru:['Baru','b'],proses:['Diproses','w'],selesai:['Selesai','o']};
 const now=()=>new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
@@ -255,7 +256,11 @@ function saveFile(n,t,m){const a=document.createElement('a');a.href=URL.createOb
 async function doSave(){}
 function formIds(){try{const u=new URL(FORM_LINK),p=u.pathname.split('/'),m={};u.searchParams.forEach((v,k)=>{if(k.indexOf('entry.')==0)m[v.trim().toUpperCase()]=k});return{id:p[4],a:m.A,b:m.B,c:m.C}}catch(e){return null}}
 function caseTxt(t){const d={msgs:t.msgs,log:t.log},r=rub(d);return 'Jenis: '+TYPES[t.type].n+' | Produk: '+t.prod+' | Saluran: '+(t.ch=='voice'?'Suara':'Chat')+NL+'Kelengkapan: '+r.filter(x=>x[1]).length+'/6 (belum: '+(r.filter(x=>!x[1]).map(x=>x[0]).join(', ')||'-')+')'+NL+'Solusi: '+(t.sol||'-')+NL+'Catatan: '+(t.note||'-')+NL+'Analisis bukti: '+((t.judges||[]).map(j=>(j.ok?'benar ':'salah ')+j.f).join('; ')||'-')+NL+NL+lines(d).map(l=>(l[0]=='a'?'CS: ':'Pelanggan: ')+l[1]).join(NL)}
-async function sendCase(t){const f=formIds();if(!f||!f.id||!f.a||!f.b||!f.c){toast('Link Google Form belum diatur dengan benar');return false}try{await fetch('https://docs.google.com/forms/d/e/'+f.id+'/formResponse',{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({[f.a]:ME.name,[f.b]:t.id+' | '+TYPES[t.type].n+' | '+ST[t.st][0],[f.c]:caseTxt(t)})});return true}catch(e){return false}}
+let SENTS=new Set();const MIN=3;
+function keepSent(){try{localStorage.setItem('prk_sent_'+ME.name,JSON.stringify([...SENTS]))}catch(e){}}
+function updPg(){const n=SENTS.size,e=$('#pg');if(!e)return;e.className='tag '+(n>=MIN?'o':'w');e.textContent=n>=MIN?'✓ Target tercapai: '+n+' kasus chat terkirim':'Terkirim '+n+' dari minimal '+MIN+' kasus chat'}
+function loadSent(){try{SENTS=new Set(JSON.parse(localStorage.getItem('prk_sent_'+ME.name)||'[]'))}catch(e){SENTS=new Set()}updPg()}
+async function sendCase(t){const f=formIds();if(!f||!f.id||!f.a||!f.b||!f.c){toast('Link Google Form belum diatur dengan benar');return false}try{await fetch('https://docs.google.com/forms/d/e/'+f.id+'/formResponse',{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({[f.a]:ME.name,[f.b]:t.id+' | '+TYPES[t.type].n+' | '+ST[t.st][0],[f.c]:caseTxt(t)})});if(t.st=='selesai'){SENTS.add(t.id);keepSent();updPg()}return true}catch(e){return false}}
 function save(){clearTimeout(saveT);saveT=setTimeout(doSave,1800)}
 function restore(d){Object.entries(d.tickets||{}).forEach(([id,x])=>{const t=T.find(k=>k.id==id);if(!t)return;t.st=x.st||t.st;t.sol=x.sol||'';t.note=x.note||'';if(x.msgs)t.msgs=x.msgs;if(x.log)t.log=x.log;t.ST=x.ST||null;t.judges=x.judges||[]});renderList();select(cur)}
 function stat(s){const ts=Object.values(s.tickets||{});let sel=0,jb=0,jt=0,kl=0;ts.forEach(d=>{if(d.st=='selesai')sel++;(d.judges||[]).forEach(j=>{jt++;if(j.ok)jb++});kl+=rub(d).filter(r=>r[1]).length/6});return{n:ts.length,sel,jb,jt,kl:ts.length?Math.round(kl/ts.length*100):0}}
@@ -267,7 +272,7 @@ p.innerHTML=`<h3 style="margin:0;font-size:15px;color:var(--ink)">${esc(s.name)}
 $('#gsv').onclick=async()=>{try{await api({action:'grade',key:sessionStorage.getItem('prk_key'),sid:s.id,score:+$('#gs').value||0,comment:$('#gc').value});GR[s.id]={score:+$('#gs').value||0,comment:$('#gc').value};renderAdm();toast('Nilai tersimpan')}catch(e){toast('Gagal menyimpan nilai')}}}
 async function csvDl(){const q=v=>Q+String(v==null?'':v).split(Q).join(Q+Q)+Q;const rows=[['Nama','Kasus ditangani','Kasus selesai','Bukti benar','Bukti dinilai','Kelengkapan (%)','Nilai guru','Komentar']].concat(SESS.map(s=>{const z=stat(s),g=GR[s.id]||{};return [s.name,z.n,z.sel,z.jb,z.jt,z.kl,g.score,g.comment]}));saveFile('rekap-praktik-layanan-pelanggan.csv',String.fromCharCode(65279)+rows.map(r=>r.map(q).join(',')).join(NL),'text/csv')}
 async function dlHist(){const txt='Riwayat praktik layanan pelanggan'+NL+'Nama: '+(ME.name||'-')+NL+NL+T.filter(t=>t.st!='baru').map(t=>'['+t.id+'] '+TYPES[t.type].n+' | '+t.prod+' | '+t.ch+' | status: '+ST[t.st][0]+NL+lines({msgs:t.msgs,log:t.log}).map(l=>(l[0]=='a'?'CS: ':'Pelanggan: ')+l[1]).join(NL)+NL+'Solusi: '+(t.sol||'-')+NL+'Catatan: '+(t.note||'-')).join(NL+NL);saveFile('riwayat-'+(ME.name||'siswa').split(' ').join('-')+'.txt',txt)}
-async function begin(){UID=sid();READY=true;setSt('hasil dikirim ke guru saat kasus selesai');return true}
+async function begin(){UID=sid();READY=true;loadSent();setSt('hasil dikirim ke guru saat kasus selesai');return true}
 async function initCloud(){if(FORM_LINK.indexOf('TEMPEL')==0){$('#bln').textContent='Link Google Form belum dipasang di berkas index.html.';$('#bl').hidden=false;return}
 try{const m=JSON.parse(localStorage.getItem('prk_me')||'null');if(m&&m.name)ME=m}catch(e){}
 if(ME.name&&await begin())return;$('#lg').hidden=false}
